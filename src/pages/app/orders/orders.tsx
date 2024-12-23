@@ -11,8 +11,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useQuery } from "@tanstack/react-query"
+import { GetOrders } from "@/api/get-orders"
+import { useSearchParams } from "react-router-dom"
+import {z} from 'zod'
 
 export function Orders(){
+
+        const [searchParams,setSearchParams] = useSearchParams()
+        const pageIndex = z.coerce.number().transform((page)=>page-1).parse(searchParams.get('page')??"1")
+
+        const {data:resultData} = useQuery({
+            queryKey:['orders',pageIndex],
+            queryFn:()=>GetOrders({pageIndex:pageIndex})
+        })
+
+        function ChangePage(pageIndex:number){
+            setSearchParams((prev)=>{
+                prev.set('page',(pageIndex+1).toString())
+                return prev
+            })
+        }
+
     return(
         <>
             <Helmet title="Pedidos"/>
@@ -33,14 +53,16 @@ export function Orders(){
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {Array.from({length:10}).map((_,i)=>{
+                        {resultData && resultData.orders.map((orders)=>{
                             return(
-                                <OrderTableRow key={i}/>
+                                <OrderTableRow key={orders.orderId} orders={orders}/>
                             )
                         })}
                     </TableBody>
                 </Table>
-                <Pagination pageIndex={0} perPage={10} totalCount={105}/>
+                {resultData&&(
+                    <Pagination pageIndex={resultData.meta.pageIndex} perPage={resultData.meta.perPage} totalCount={resultData.meta.totalCount} OnPageChange={ChangePage}/>
+                )}
             </div>
         </>
     )

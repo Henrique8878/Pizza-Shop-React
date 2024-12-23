@@ -1,11 +1,13 @@
 import { DropdownMenu,DropdownMenuTrigger,DropdownMenuLabel,DropdownMenuItem,DropdownMenuContent,DropdownMenuSeparator} from "./ui/dropdown-menu"
 import { ChevronDown,Building, LogOut } from "lucide-react"
 import { Button } from "./ui/button"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { getProfile } from "@/api/get-profile"
 import { getManagedRestaurant } from "@/api/get-managed-restaurant"
 import { Skeleton } from "@/components/ui/skeleton"
 import { StoreDialogProfile } from "./store-dialog-profile"
+import { SignOut } from "@/api/sign-out"
+import { replace, useNavigate } from "react-router-dom"
 import {
     Dialog,
     DialogContent,
@@ -17,6 +19,13 @@ import {
 
 export function AccountMenu(){
 
+    const {mutateAsync:SignOutFn, isPending:isSigningOut} = useMutation({
+        mutationFn:SignOut,
+        onSuccess(_,__,___) {
+            navigate("/sign-in", {replace:true})
+        },
+    })
+
     const {data:profileData, isLoading:isLoadingProfile} = useQuery({
         queryKey:['profile'],
         queryFn:getProfile
@@ -24,9 +33,13 @@ export function AccountMenu(){
 
     const {data:ManagedRestaurantData, isLoading:isLoadingManagedRestaurant} = useQuery({
         queryKey:['managed-restaurant'],
-        queryFn:getManagedRestaurant
+        queryFn:getManagedRestaurant,
+        staleTime:Infinity
     })
 
+    const navigate = useNavigate()
+
+   
     return(
         <Dialog>
             <DropdownMenu>
@@ -48,9 +61,11 @@ export function AccountMenu(){
                             <span>Perfil da loja</span>
                         </DropdownMenuItem>
                     </DialogTrigger>
-                    <DropdownMenuItem className="flex gap-2 text-rose-500 dark:text-rose-400 pointer">
-                        <LogOut/>
-                        <span>Sair da loja</span>
+                    <DropdownMenuItem className="flex gap-2 text-rose-500 dark:text-rose-400 pointer" asChild>
+                        <button onClick={()=>SignOutFn()}>
+                            <LogOut/>
+                            <span>Sair da loja</span>
+                        </button>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

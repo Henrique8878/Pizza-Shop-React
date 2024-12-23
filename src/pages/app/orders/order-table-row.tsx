@@ -15,8 +15,25 @@ import {
   } from "@/components/ui/dialog" 
     
   import { OrderDetails } from "./order-details"
+  import { OrderStatus } from "@/components/order-status"
+  import {formatDistanceToNow} from 'date-fns'
+  import {ptBR} from 'date-fns/locale'
+  import { GetOrders } from "@/api/get-orders"
+import { useQuery } from "@tanstack/react-query"
 
-export function OrderTableRow(){
+
+  interface OrderTableRowProps{
+    orders: {
+        orderId: string;
+        createdAt: string;
+        status: "pending" | "canceled" | "processing" | "delivering" | "delivered";
+        customerName: string;
+        total: number;
+    }
+  }
+export function OrderTableRow({orders}:OrderTableRowProps){
+
+
     return(
         <TableRow>
         <TableCell>
@@ -29,16 +46,16 @@ export function OrderTableRow(){
                 <OrderDetails/>
             </Dialog>
         </TableCell>
-        <TableCell>45234rt345fdgfdgdf</TableCell>
-        <TableCell className="text-muted-foreground">há 15 minutos</TableCell>
+        <TableCell>{orders.orderId}</TableCell>
+        <TableCell className="text-muted-foreground">{formatDistanceToNow(orders.createdAt,{locale:ptBR,addSuffix:true})}</TableCell>
         <TableCell>
-            <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-slate-400"/>
-                <span className="text-muted-foreground">Pendente</span>
-            </div>
+           {OrderStatus({status:orders.status})}
         </TableCell>
-        <TableCell>Henrique de Araújo Tomaz</TableCell>
-        <TableCell>R$ 149,00</TableCell>
+        <TableCell>{orders.customerName}</TableCell>
+        <TableCell>{orders.total.toLocaleString('pt-BR',{
+            style:"currency",
+            currency:"BRL"
+        })}</TableCell>
         <TableCell>
             <Button variant="outline">
                 <ArrowRight/>
