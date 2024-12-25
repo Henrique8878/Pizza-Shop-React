@@ -14,6 +14,7 @@ import {
 import { useQuery } from "@tanstack/react-query"
 import { GetOrders } from "@/api/get-orders"
 import { useSearchParams } from "react-router-dom"
+import { OrderRowSkeleton } from "./order-row-skeleton"
 import {z} from 'zod'
 
 export function Orders(){
@@ -26,7 +27,7 @@ export function Orders(){
 
         const pageIndex = z.coerce.number().transform((page)=>page-1).parse(searchParams.get('page')??"1")
 
-        const {data:resultData} = useQuery({
+        const {data:resultData,isLoading:isLoadingRow} = useQuery({
             queryKey:['orders',pageIndex,orderId,customerName,status],
             queryFn:()=>GetOrders({pageIndex:pageIndex,customerName:customerName,orderId:orderId,status:status==="all"?null:status})
         })
@@ -37,7 +38,6 @@ export function Orders(){
                 return prev
             })
         }
-
     return(
         <>
             <Helmet title="Pedidos"/>
@@ -58,6 +58,9 @@ export function Orders(){
                         </TableRow>
                     </TableHeader>
                     <TableBody>
+                        {isLoadingRow&&(
+                            <OrderRowSkeleton/>
+                        )}
                         {resultData && resultData.orders.map((orders)=>{
                             return(
                                 <OrderTableRow key={orders.orderId} orders={orders}/>

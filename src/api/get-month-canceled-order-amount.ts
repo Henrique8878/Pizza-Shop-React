@@ -6,6 +6,6 @@ interface GetMonthCanceledOrdersAmountBody{
 }
 
 export async function GetMonthCanceledOrdersAmount(){
-    const response = await api.get<GetMonthCanceledOrdersAmountBodyPcance>('/metrics/month-canceled-orders-amount')
+    const response = await api.get<GetMonthCanceledOrdersAmountBody>('/metrics/month-canceled-orders-amount')
     return response.data
 }

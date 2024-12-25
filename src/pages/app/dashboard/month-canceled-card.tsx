@@ -10,6 +10,7 @@ import {
   import { CancelOrder } from "@/api/cancel-order"
 import { useQuery } from "@tanstack/react-query"
 import { GetMonthCanceledOrdersAmount } from "@/api/get-month-canceled-order-amount"
+import { MetricCardSkeleton } from "@/components/metric-card-skeleton"
 
 export function MonthCanceledCard(){
         const {data:GetMonthCanceledOrdersAmountData} = useQuery({
@@ -22,18 +23,22 @@ export function MonthCanceledCard(){
                 <CardTitle className="text-xl">Cancelamentos(mês)</CardTitle>
                 <DollarSign className="w-5 h-5 text-muted-foreground"/>
             </CardHeader>
-            <CardContent className="flex flex-col gap-1">
-                <span className="text-2xl font-semibold">{GetMonthCanceledOrdersAmountData?.amount}</span>
-                <CardDescription>
-                    {GetMonthCanceledOrdersAmountData&&GetMonthCanceledOrdersAmountData.diffFromLastMonth>=0?(
-                        <span className="text-muted-foreground"><span className="text-red-500 dark:text-red-400">+{GetMonthCanceledOrdersAmountData.diffFromLastMonth.toFixed(0)}%</span> em relação ao mês passado</span>
-                    ):
-                    (
-                        <span className="text-muted-foreground"><span className="text-emerald-500 dark:text-emerald-400">-{GetMonthCanceledOrdersAmountData?.diffFromLastMonth.toFixed(0)}%</span> em relação ao mês passado</span>
-                    )}
-                    
-                </CardDescription>
-            </CardContent>
+           {GetMonthCanceledOrdersAmountData?.amount?(
+                 <CardContent className="flex flex-col gap-1">
+                    <span className="text-2xl font-semibold">{GetMonthCanceledOrdersAmountData?.amount}</span>
+                    <CardDescription>
+                        {GetMonthCanceledOrdersAmountData&&GetMonthCanceledOrdersAmountData.diffFromLastMonth>=0?(
+                            <span className="text-muted-foreground"><span className="text-red-500 dark:text-red-400">+{GetMonthCanceledOrdersAmountData.diffFromLastMonth.toFixed(0)}%</span> em relação ao mês passado</span>
+                        ):
+                        (
+                            <span className="text-muted-foreground"><span className="text-emerald-500 dark:text-emerald-400">-{GetMonthCanceledOrdersAmountData?.diffFromLastMonth.toFixed(0)}%</span> em relação ao mês passado</span>
+                        )}
+                        
+                    </CardDescription>
+                </CardContent>
+           ):(
+            <MetricCardSkeleton/>
+           )}
         </Card>
     )
 }

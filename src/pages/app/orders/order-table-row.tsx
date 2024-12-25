@@ -25,6 +25,7 @@ import {
     import { ApproveOrder } from "@/api/approve-order"
     import { DeliverOrder } from "@/api/deliver-order"
     import { DispatchOrder } from "@/api/dispatch-orders"
+   
     import { toast } from "sonner"
 
   interface OrderTableRowProps{
@@ -102,6 +103,7 @@ export function OrderTableRow({orders}:OrderTableRowProps){
     })
 
 
+    const date = new Date(orders.createdAt)
     return(
         <TableRow>
         <TableCell>
@@ -115,7 +117,7 @@ export function OrderTableRow({orders}:OrderTableRowProps){
             </Dialog>
         </TableCell>
         <TableCell>{orders.orderId}</TableCell>
-        <TableCell className="text-muted-foreground">{formatDistanceToNow(orders.createdAt,{locale:ptBR,addSuffix:true})}</TableCell>
+        <TableCell className="text-muted-foreground">{formatDistanceToNow(date,{locale:ptBR,addSuffix:true})}</TableCell>
         <TableCell>
            {OrderStatus({status:orders.status})}
         </TableCell>

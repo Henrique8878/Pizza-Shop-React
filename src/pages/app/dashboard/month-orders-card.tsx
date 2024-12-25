@@ -9,6 +9,7 @@ import {
   import { DollarSign } from "lucide-react"
   import { GetMonthOrdersAmount } from "@/api/get-month-orders-amount"
 import { useQuery } from "@tanstack/react-query"
+import { MetricCardSkeleton } from "@/components/metric-card-skeleton"
 
 export function MonthOrdersCard(){
 
@@ -22,7 +23,8 @@ export function MonthOrdersCard(){
                 <CardTitle className="text-xl">Pedidos(mês)</CardTitle>
                 <DollarSign className="w-5 h-5 text-muted-foreground"/>
             </CardHeader>
-            <CardContent className="flex flex-col gap-1">
+            {GetMonthOrdersAmountFn?.amount?(
+                <CardContent className="flex flex-col gap-1">
                 <span className="text-2xl font-semibold">{GetMonthOrdersAmountFn?.amount}</span>
                 <CardDescription>
                     {GetMonthOrdersAmountFn&&GetMonthOrdersAmountFn.diffFromLastMonth>0?(
@@ -34,6 +36,9 @@ export function MonthOrdersCard(){
                     
                 </CardDescription>
             </CardContent>
+            ):(
+                <MetricCardSkeleton/>
+            )}
         </Card>
     )
 }

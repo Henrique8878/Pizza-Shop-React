@@ -9,6 +9,7 @@ import {
 import { useQuery } from "@tanstack/react-query"
   import { DollarSign } from "lucide-react"
 import { GetMonthReceipt } from "@/api/get-month-receipt"
+import { MetricCardSkeleton } from "@/components/metric-card-skeleton"
 
 export function MonthRevenueCard(){
 
@@ -29,17 +30,25 @@ export function MonthRevenueCard(){
                 <DollarSign className="w-5 h-5 text-muted-foreground"/>
             </CardHeader>
             <CardContent className="flex flex-col gap-1">
-                <span className="text-2xl font-semibold">{ConvertReceiptReal(GetMonthReceiptFn?GetMonthReceiptFn?.receipt:0)}</span>
-                <CardDescription>
-                    {GetMonthReceiptFn&&GetMonthReceiptFn?.diffFromLastMonth>=0?
-                    (
-                        <span className="text-muted-foreground"><span className="text-emerald-500 dark:text-emerald-400">+{GetMonthReceiptFn?.diffFromLastMonth.toFixed(0)}%</span> em relação ao mês passado</span>
-                    ):
-                    (
-                        <span className="text-muted-foreground"><span className="text-red-500 dark:text-red-400">{GetMonthReceiptFn?.diffFromLastMonth}</span> em relação ao mês passado</span>
-                    )}
-                    
-                </CardDescription>
+                {GetMonthReceiptFn?.receipt?(
+                    <>
+                        <span className="text-2xl font-semibold">{ConvertReceiptReal(GetMonthReceiptFn?GetMonthReceiptFn?.receipt:0)}</span>
+                        <CardDescription>
+                            {GetMonthReceiptFn&&GetMonthReceiptFn?.diffFromLastMonth>=0?
+                            (
+                                <span className="text-muted-foreground"><span className="text-emerald-500 dark:text-emerald-400">+{GetMonthReceiptFn?.diffFromLastMonth.toFixed(0)}%</span> em relação ao mês passado</span>
+                            ):
+                            (
+                                <span className="text-muted-foreground"><span className="text-red-500 dark:text-red-400">{GetMonthReceiptFn?.diffFromLastMonth}</span> em relação ao mês passado</span>
+                            )}
+                            
+                        </CardDescription>
+                    </>
+                ):(
+                    <MetricCardSkeleton/>
+                )
+                }
+                
             </CardContent>
         </Card>
     )
