@@ -1,5 +1,5 @@
 
-type TypeStatus = "pending" | "canceled" | "processing" | "delivering" | "delivered"
+export type TypeStatus = "pending" | "canceled" | "processing" | "delivering" | "delivered"
 
 interface Status{
     status:TypeStatus

@@ -17,13 +17,33 @@ import {
     TableRow,
   } from "@/components/ui/table"
   
-  
+  import { useQuery } from "@tanstack/react-query"
+  import { GetOrderDetails } from "@/api/get-order-details"
+    import { OrderStatus } from "@/components/order-status"
+    import {ptBR} from 'date-fns/locale'
+    import {formatDistanceToNow} from 'date-fns'
+import { Item } from "@radix-ui/react-dropdown-menu"
+    
+  interface OrderDetaisBody{
+    id:string
+  }
 
-export function OrderDetails(){
+export function OrderDetails({id}:OrderDetaisBody){
+
+    const {data:OrderDetailsData} = useQuery({
+        queryKey:['order-details'],
+        queryFn:()=>GetOrderDetails({id:id})
+    })
+
+
+    function calcSubTotal(price:number,quantity:number){
+        const result = price*quantity
+        return result.toLocaleString('pt-BR',{style:"currency",currency:"BRL"})
+    }
     return(
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Pedido: h34ghg45324v43j</DialogTitle>
+                <DialogTitle>Pedido: {OrderDetailsData?.id}</DialogTitle>
                 <DialogDescription>Detalhes do pedido</DialogDescription>
             </DialogHeader>
 
@@ -32,27 +52,24 @@ export function OrderDetails(){
                     <TableRow className="flex justify-between">
                         <TableCell>Status</TableCell>
                         <TableCell>
-                            <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                                <span>Pendente</span>
-                            </div>
+                            {OrderStatus({status:OrderDetailsData?.status || "pending"})}
                         </TableCell>
                     </TableRow>
                     <TableRow className="flex justify-between">
                         <TableCell>Cliente</TableCell>
-                        <TableCell>Henrique de Araújo Tomaz</TableCell>
+                        <TableCell>{OrderDetailsData?.customer.name}</TableCell>
                     </TableRow>
                     <TableRow className="flex justify-between">
                         <TableCell>Telefone</TableCell>
-                        <TableCell>(35) 99904-7684</TableCell>
+                        <TableCell>{OrderDetailsData?.customer.phone}</TableCell>
                     </TableRow>
                     <TableRow className="flex justify-between">
                         <TableCell>E-mail</TableCell>
-                        <TableCell>henrique.tomaz@fagammon.edu.br</TableCell>
+                        <TableCell>{OrderDetailsData?.customer.email}</TableCell>
                     </TableRow>
                     <TableRow className="flex justify-between">
                         <TableCell>Realizado há</TableCell>
-                        <TableCell>há 3 minutos</TableCell>
+                        <TableCell>{OrderDetailsData?.createdAt?formatDistanceToNow(OrderDetailsData?.createdAt,{locale:ptBR,addSuffix:true}):"Data não disponível"}</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>
@@ -66,21 +83,19 @@ export function OrderDetails(){
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow>
-                        <TableCell>Pizza Pepperoni Familia</TableCell>
-                        <TableCell>2</TableCell>
-                        <TableCell>R$ 69,90</TableCell>
-                        <TableCell>R$ 119,90</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Pizza Pepperoni Familia</TableCell>
-                        <TableCell>2</TableCell>
-                        <TableCell>R$ 69,90</TableCell>
-                        <TableCell>R$ 119,90</TableCell>
-                    </TableRow>
+                    {OrderDetailsData?.orderItems.map((item)=>{
+                        return(
+                            <TableRow key={item.id}>
+                                <TableCell>{item.product.name}</TableCell>
+                                <TableCell>{item.quantity}</TableCell>
+                                <TableCell>{item.priceInCents.toLocaleString('pt-BR',{style:"currency",currency:"BRL"})}</TableCell>
+                                <TableCell>{calcSubTotal(item.priceInCents,item.quantity)}</TableCell>
+                            </TableRow>
+                        )
+                    })}
                     <TableRow>
                         <TableCell colSpan={3}>Total do pedido</TableCell>
-                        <TableCell>R$ 238,80</TableCell>
+                        <TableCell>{OrderDetailsData?.totalInCents.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>             
@@ -89,3 +104,5 @@ export function OrderDetails(){
 }
                         
                         
+                          
+                            

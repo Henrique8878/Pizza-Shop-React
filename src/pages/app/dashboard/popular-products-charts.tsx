@@ -8,6 +8,8 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
+import { useQuery } from '@tanstack/react-query'
+import { GetPopularProducts } from '@/api/get-popular-products'
   
   const data = [
     {
@@ -52,6 +54,11 @@ import {
 
 
 export function PopularProductsCharts(){
+
+    const {data:GetPopularProductsData} = useQuery({
+        queryKey:['popular-products'],
+        queryFn:GetPopularProducts
+    })
     return(
         <Card className='col-span-3 pb-4 pr-4'>
             <CardHeader className='flex flex-col'>
@@ -59,30 +66,32 @@ export function PopularProductsCharts(){
                 <CardDescription>Receita diária no periódo</CardDescription>
             </CardHeader>
             <CardContent>
-                <ResponsiveContainer width="100%" height={240}>
-                    <PieChart data={data} style={{fontSize:12}}>
-                        <Pie data={data} dataKey="amount" nameKey="product" outerRadius={86} innerRadius={64} strokeWidth={8} cx="50%" cy="50%" label={({
-                            cx,cy,midAngle,innerRadius,outerRadius,value,index,
-                        })=>{
-                            const RADIAN = Math.PI/100
-                            const radius = 12+innerRadius+(outerRadius-innerRadius)
-                            const x = cx + radius* Math.cos(-midAngle*RADIAN)
-                            const y = cy + radius* Math.sin(-midAngle*RADIAN)
+              {GetPopularProductsData&&(
+                  <ResponsiveContainer width="100%" height={240}>
+                  <PieChart style={{fontSize:12}}>
+                      <Pie data={GetPopularProductsData} dataKey="amount" nameKey="product" outerRadius={86} innerRadius={64} strokeWidth={8} cx="50%" cy="50%" label={({
+                          cx,cy,midAngle,innerRadius,outerRadius,value,index,
+                      })=>{
+                          const RADIAN = Math.PI/100
+                          const radius = 12+innerRadius+(outerRadius-innerRadius)
+                          const x = cx + radius* Math.cos(-midAngle*RADIAN)
+                          const y = cy + radius* Math.sin(-midAngle*RADIAN)
 
-                            return(
-                                <text x={x} y={y} className='fill-muted-foreground text-xs' textAnchor={x>cx?'start':'end'} dominantBaseline="central">
-                                    {data[index].product.substring(0,12).concat('...')} ({value})
-                                </text>
-                            )
-                        }} labelLine={false}>
-                            {data.map((_,i)=>{
-                                return(
-                                    <Cell key={`cell-${i}`} fill={arrayColors[i]} className='stroke-background hover:opacity-80'/>
-                                )  
-                            })}
-                        </Pie>
-                    </PieChart>
-                </ResponsiveContainer>
+                          return(
+                              <text x={x} y={y} className='fill-muted-foreground text-xs' textAnchor={x>cx?'start':'end'} dominantBaseline="central">
+                                  {GetPopularProductsData[index].product.substring(0,12).concat('...')} ({value})
+                              </text>
+                          )
+                      }} labelLine={false}>
+                          {GetPopularProductsData.map((_,i)=>{
+                              return(
+                                  <Cell key={`cell-${i}`} fill={arrayColors[i]} className='stroke-background hover:opacity-80'/>
+                              )  
+                          })}
+                      </Pie>
+                  </PieChart>
+              </ResponsiveContainer>
+              )}
             </CardContent>
         </Card>
     )
