@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios";
 
-interface BodySignIn{
+export interface BodySignIn{
     email:string
 }
 

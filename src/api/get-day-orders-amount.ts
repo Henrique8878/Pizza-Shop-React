@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios";
 
-interface GetDayOrdersAmountBody{
+export interface GetDayOrdersAmountBody{
     amount: number
     diffFromYesterday:number 
 }
