@@ -57,7 +57,7 @@ export function SignIn(){
                     <form action="" className="space-y-4" onSubmit={handleSubmit(handleSignIn)}>
                         <div className="flex flex-col gap-2">
                             <label htmlFor="inp_email" className="text-foreground font-medium">Seu e-mail</label>
-                            <Input type="email" className="border p-1 rounded-md outline-none" {...register('email')}/>
+                            <Input id="inp_email" type="email" className="border p-1 rounded-md outline-none" {...register('email')}/>
                         </div>
                         <Button className="w-full" disabled = {isSubmitting}>Acessar painel</Button>
                     </form>
