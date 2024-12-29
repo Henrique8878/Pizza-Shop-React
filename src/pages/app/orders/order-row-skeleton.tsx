@@ -8,7 +8,7 @@ import {
 export function OrderRowSkeleton(){
     return Array.from({length:10}).map((_,i)=>{
          return(
-        <TableRow>
+        <TableRow key={i}>
             <TableCell>
                 <Button variant="outline">
                     <Search/>

@@ -1,20 +1,11 @@
 import { api } from "@/lib/axios";
 
-interface GetOrderDetailsBody{
+export interface GetOrderDetailsBody{
     id:string
 }
 
-interface ContentOrderItems{
-    id:string,
-    priceInCents:number,
-    quantity:number,
-    product:{
-        name:string
-    }
-}
 
-
-interface DataGetDetails{
+export interface DataGetDetails{
     status: "pending" | "canceled" | "processing" | "delivering" | "delivered";
     id: string;
     createdAt: string;

@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios";
 
-interface pageIndexParams{
+export interface pageIndexParams{
     pageIndex:number,
     orderId:string | null,
     customerName:string | null,

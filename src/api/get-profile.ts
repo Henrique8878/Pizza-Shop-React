@@ -1,7 +1,7 @@
 import { api } from "@/lib/axios";
 
 
- interface getProfileBody {
+ export interface getProfileBody {
     name: string;
     id: string;
     email: string;

@@ -1,6 +1,6 @@
 import { api } from "@/lib/axios";
 
-interface CancelOrderBody{
+export interface CancelOrderBody{
     id:string
 }
 
